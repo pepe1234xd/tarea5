@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form id="transactions-form">
+            <div>
+                <label for="transactions-form-amount">Amount to be transfered:</label>
+                <input name="amount" id="transactions-form-amount" type="number" required max="10000" min="50" step=".01">
+                <label for="transactions-form-accounts">Accounts</label>
+                <select name="account_id" id="transactions-form-accounts"></select>
+            </div>
+            <button id="transactions-form-save-button" type="button">Save</button>
+            <button id="transactions-form-withdraw-button" type="button">Withdraw</button>
+        </form>
+        <form id="show-form">
+            <label for="transactions-form-accounts">Account to be showed:</label>
+            <select name="account_id" id="transactions-form-accounts-show"></select>
+            <div>
+                <label for="show-form-button">your amount in this acount is:</label>
+                <button id="show-form-button" type="button">Calculate</button>
+                <p id="show"> </p>
+            </div>
+            
+
+        </form>
+    </div>
+</body>
+</html>
