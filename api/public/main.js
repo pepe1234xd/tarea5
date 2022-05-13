@@ -51,19 +51,30 @@ function App() {
     /** @type {HTMLButtonElement} */
     const showButton = document.getElementById('show-form-button');
     showButton.onclick = function (ev) {
+        /**@type {HTMLSelectElement} */
         const inputs = formShow.querySelectorAll('select');
-        const object = {};
         for (const input of inputs) {
-            let value = input.value;
-            const key = input.name;
-            object[key] = value;          
-        }
-
-        TransactionsService.sum(object);
-    }
-
-
+            let id = input.value;
+            TransactionsService.sum(id);
+            const show = new Show (id)
+        }  
+    }    
 }
+
+function Show (id){
+
+    const text = document.createElement('span');
+    const populate = async function () {
+            const ammount = await TransactionsService.sum(id);      
+            text.innerHTML = ammount.amount;
+        }
+        populate();
+        return text;
+}
+   
+
+
+
 
 function SelectShow(){
     /** @type {HTMLSelectElement} */
@@ -128,11 +139,13 @@ class TransactionsService {
             body: JSON.stringify(transaction)
         })
     }
-    static async sum() {
-        const response = await fetch(TransactionsService.baseUrl, {
+    static async sum(id) {
+        const response = await fetch(TransactionsService.base+`/sum/${id}`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Encondig': 'UTF-8',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
         })
         switch (response.status) {

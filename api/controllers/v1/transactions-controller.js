@@ -43,7 +43,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/sum', async (req, res) => {
+router.get('/sum/:id', async (req, res) => {
+    
     try {
         const id = req.params.id;
         const sum = await transactions.sum(id);
