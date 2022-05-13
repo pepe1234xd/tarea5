@@ -54,19 +54,19 @@ function App() {
         /**@type {HTMLSelectElement} */
         const inputs = formShow.querySelectorAll('select');
         for (const input of inputs) {
-            let id = input.value;
-            TransactionsService.sum(id);
-            const show = new Show (id)
+            let id = input.value;  
+            const show = new Show(id);
         }  
+
     }    
 }
 
 function Show (id){
 
-    const text = document.createElement('span');
+    const text = document.getElementById('show');
     const populate = async function () {
-            const ammount = await TransactionsService.sum(id);      
-            text.innerHTML = ammount.amount;
+            const ammount = await TransactionsService.sum(id);
+            text.innerHTML =`-&nbsp&nbsp&nbspAMOUNT: <strong>${ammount.sum} </strong>`;           
         }
         populate();
         return text;
@@ -140,7 +140,7 @@ class TransactionsService {
         })
     }
     static async sum(id) {
-        const response = await fetch(TransactionsService.base+`/sum/${id}`, {
+        const response = await fetch(TransactionsService.baseUrl + `/sum/${id}`, {
             method: 'GET',
             headers: {
                 'Encondig': 'UTF-8',
