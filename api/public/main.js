@@ -56,7 +56,7 @@ function App() {
         for (const input of inputs) {
             let value = input.value;
             const key = input.name;
-            object[key] = value; // Object.defineProperty(object, key, { value: value })            
+            object[key] = value;          
         }
 
         TransactionsService.sum(object);
