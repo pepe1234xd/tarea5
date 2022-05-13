@@ -1,23 +1,20 @@
-const pool = require(`../api/db/db.js`);
+const express = require('express');
+const path = require('path');
 
+const app = express();
+const v1 = require('./controllers/v1');
+const port = 5001;
 
-const addNewAmount = async () =>{
+// JSON Middleware
+app.use(express.json());
 
-    //ingresa aqui el valor a añadir
-    let value = 0;
-    const b= await pool.query(`INSERT INTO management(amount) VALUES (${value})`);
-}
-addNewAmount();
+// Static files
+const folder = path.resolve(__dirname, 'public');
+app.use('/', express.static(folder));
 
-const showamount = async () =>{
+// Routers
+app.use('/v1', v1);
 
-    const show= await pool.query(`SELECT SUM(amount) FROM management`);
-    console.log(show.rows);
-}
-showamount();
-const showdata = async () =>{
-
-    const show2= await pool.query(`SELECT * FROM management`);
-    console.log(show2.rows);
-}
-showdata();
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
