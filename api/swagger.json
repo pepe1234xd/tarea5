@@ -1,0 +1,360 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Management",
+    "description": "This program is used to calculate how much money you have in your accounts.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5001/v1",
+      "description": "Main server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Deposits and withdrawals",
+      "description": "Points to required requests"
+    }
+  ],
+  "paths": {
+    "/transactions/": {
+      "get": {
+        "summary": "Searches all data in the tables",
+        "description": "Displays all objects in the Transactions table.",
+        "responses": {
+          "200": {
+            "description": "The transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/transactions"
+                  }
+                },
+                "examples": {
+                  "ColorExample": {
+                    "$ref": "#/components/examples/TransactionArrayExample"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The transactios was not found"
+          }
+        },
+        "tags": [
+          "All transactions"
+        ]
+      },
+      "post": {
+        "summary": "Inserts a new transaction in database.",
+        "description": "Will recieve a JSON in body with a task element to Insert in database.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "transaction_add",
+            "schema": {
+              "$ref": "#/components/schemas/transactions"
+            },
+            "example": {
+              "account_id": 1,
+              "amount": 5000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The transaction was added to database"
+          },
+          "500": {
+            "description": "The server encountered an unexpected condition."
+          }
+        },
+        "tags": [
+          "insert new transfer"
+        ]
+      }
+    },
+    "/transactions/{transactionID}": {
+      "get": {
+        "summary": "Returns the transaction using an id",
+        "description": "Returns a specific transaction using an id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transactionID",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric id of the transaction to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/transactions"
+                  }
+                },
+                "examples": {
+                  "ColorExample": {
+                    "$ref": "#/components/examples/by_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transaction id"
+        ]
+      }
+    },
+    "/transactions/sum/{sumID}": {
+      "get": {
+        "summary": "Returns the sum in an especific account",
+        "description": "Returns a specific sum using the id account.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sumID",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric id of the account to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of the sum in this account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/suma"
+                  }
+                },
+                "examples": {
+                  "ColorExample": {
+                    "$ref": "#/components/examples/sum_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sum by id"
+        ]
+      }
+    },
+    "/accounts/": {
+      "get": {
+        "summary": "Searches all data in the tables",
+        "description": "Displays all objects in the Transactions table.",
+        "responses": {
+          "200": {
+            "description": "The transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/accounts"
+                  }
+                },
+                "examples": {
+                  "ColorExample": {
+                    "$ref": "#/components/examples/accountArrayExample"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The account was not found"
+          }
+        },
+        "tags": [
+          "All accounts"
+        ]
+      },
+      "post": {
+        "summary": "Inserts a new account in database.",
+        "description": "Will recieve a JSON in body with a task element to Insert in database.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "transaction_add",
+            "schema": {
+              "$ref": "#/components/schemas/accounts"
+            },
+            "example": {
+              "name": "SANTANDER"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The transaction was added to database"
+          },
+          "500": {
+            "description": "The server encountered an unexpected condition."
+          }
+        },
+        "tags": [
+          "insert new account"
+        ]
+      }
+    },
+    "/transactions/{accountID}": {
+      "get": {
+        "summary": "Returns the sum in an especific account",
+        "description": "Returns a specific sum using the id account.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountID",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric id of the account to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON account in this id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/suma"
+                  }
+                },
+                "examples": {
+                  "ColorExample": {
+                    "$ref": "#/components/examples/sum_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "get an especific account by id"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "transactions": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "number"
+          },
+          "transaction_id": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "suma": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "number"
+          },
+          "sum": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name sum_id"
+        ]
+      },
+      "accounts": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examples": {
+      "by_id": {
+        "summary": "transaction_id",
+        "value": {
+          "account_id": 1,
+          "transaction_id": 1,
+          "amount": 5000,
+          "date": "16\\05\\2022"
+        }
+      },
+      "TransactionArrayExample": {
+        "summary": "Color Array",
+        "value": [
+          {
+            "account_id": 1,
+            "transaction_id": 5,
+            "amount": 6000,
+            "date": "16\\05\\2022"
+          },
+          {
+            "account_id": 12,
+            "transaction_id": 1,
+            "amount": 45000,
+            "date": "16\\05\\2022"
+          },
+          {
+            "account_id": 2,
+            "transaction_id": 1,
+            "amount": 23500,
+            "date": "16\\05\\2022"
+          }
+        ]
+      },
+      "sum_id": {
+        "summary": "suma",
+        "value": {
+          "account_id": 1
+        }
+      },
+      "accountArrayExample": {
+        "summary": "accounts",
+        "value": [
+          {
+            "account_id": 1,
+            "name": "SANTANDER"
+          },
+          {
+            "account_id": 2,
+            "name": "HSBC"
+          }
+        ]
+      }
+    }
+  }
+}

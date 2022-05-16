@@ -14,7 +14,8 @@
     "humps": "^2.0.1",
     "lodash": "^4.17.21",
     "pg": "^8.7.3",
-    "pg-promise": "^10.11.1"
+    "pg-promise": "^10.11.1",
+    "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
