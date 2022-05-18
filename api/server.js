@@ -16,8 +16,8 @@ const folder = path.resolve(__dirname, 'public');
 app.use('/', express.static(folder));
 
 //adding a swagger documentation.
-app.use(`swagger`,swagger.serve);
-app.use(`swagger`,swagger.setup(swaggerdoc));
+app.use(`/swagger`, swagger.serve);
+app.use(`/swagger`, swagger.setup(swaggerdoc));
 
 // Routers
 app.use('/v1', v1);
