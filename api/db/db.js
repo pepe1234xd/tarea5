@@ -1,3 +1,18 @@
+const { Pool } = require(`pg`)
+
+//creation a datebase using pg-promise
+const config = ({
+    host: 'localhost',
+    user: 'postgres',
+    password: 'Naturales13',
+    database: 'management_db',
+    port: 5432
+});
+
+const pool = new Pool(config);
+
+module.exports = pool;
+/** 
 //ORM object relationa mapping
 const pgp = require(`pg-promise`);
 const camelize = require(`camelize`);
@@ -31,3 +46,4 @@ const db = pgp({
 });
 
 module.exports = db;
+*/
