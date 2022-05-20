@@ -12,8 +12,8 @@ function Entity(table, fieldId) {
      * Returns all the available records
      */
     this.all = async function() {
-        const result = await db.query(`SELECT * FROM ${table};`);
-        return result.rows;
+        const result = await db.any(`SELECT * FROM ${table};`);
+        return result;
     }
 
     /**
@@ -21,8 +21,8 @@ function Entity(table, fieldId) {
      * @param {number} id The to base the search
      */
      this.get = async function(id) {
-        const result = await db.query(`SELECT * FROM ${table} WHERE ${fieldId} = ${id}`);
-        return result.rows[0];
+        const result = await db.one(`SELECT * FROM ${table} WHERE ${fieldId} = ${id}`);
+        return result;
     }
 
     /**
@@ -32,14 +32,15 @@ function Entity(table, fieldId) {
      * @param {Record<string, any>} object The object to be stored
      */
     this.insert = async function(object) {
-        // object = {
-        //  personId = 1,
+        // let object = {
+        //  personId: 1,
         //  name: 'Alfredo',
         //  age: 22,
         // }
 
-        // etr = Object.entries(object)
-        // etr = [
+        // let etr = Object.entries(object)
+        // Output:
+        // [
         //  [ 'personId', 1 ],
         //  [ 'name', 'Alfredo' ],
         //  [ 'age', 25 ]
@@ -48,14 +49,14 @@ function Entity(table, fieldId) {
         // Are the same
         //
         // for (let i = 0; i < etr.length; i++) {
-        //  const el = etr[i];            
-        //  const key = etr[0]        
-        //  const value = etr[1]
+        //  const el = etr[i];
+        //  const key = el[0];
+        //  const value = el[1];
         // }
         //
         // for (const el of etr) {
-        //  const key = etr[0]        
-        //  const value = etr[1]
+        //  const key = el[0]        
+        //  const value = el[1]
         // }
         //
         // for (const [key, value] of etr) {
@@ -70,8 +71,8 @@ function Entity(table, fieldId) {
         columns = columns.substring(0, columns.length - 1);
         values = values.substring(0, values.length - 1);
 
-        const result = await db.query(`INSERT INTO ${table}(${columns}) VALUES(${values}) RETURNING ${fieldId};`);
-        return result.rows[0];
+        const result = await db.any(`INSERT INTO ${table}(${columns}) VALUES(${values}) RETURNING ${fieldId};`);
+        return result;
     }
 
 }

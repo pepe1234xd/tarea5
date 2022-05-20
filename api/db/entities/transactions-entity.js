@@ -7,8 +7,8 @@ class TransacationsEntity extends Entity {
         super(table, 'transaction_id');
 
         this.sum = async function (id) {
-            const result = await db.query(`SELECT SUM(amount) FROM ${table} WHERE account_id = ${id};`);
-            return result.rows[0];
+            const result = await db.one(`SELECT SUM(amount) FROM ${table} WHERE account_id = ${id};`);
+            return result;
         }
     }
 }
