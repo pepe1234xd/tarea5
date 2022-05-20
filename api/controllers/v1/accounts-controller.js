@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     try {
         if (!isEmpty(account)) {
             const id = await accounts.insert(account);
-            res.send(201).send(id);
+            res.status(201).send(id);
         } else {
             res.status(204).send(null);
         }    
