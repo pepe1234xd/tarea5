@@ -1,5 +1,5 @@
 // Creation a datebase using pg-promise
-// ORM object relationa mapping
+// ORM object relational mapping
 const pgp = require(`pg-promise`);
 const camelize = require(`camelize`);
 
