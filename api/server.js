@@ -9,6 +9,7 @@ const port = 5001;
 // JSON Middleware
 app.use(express.json());
 
+//Only swagger
 const swagger = require(`swagger-ui-express`);
 const swaggerdoc = require(`./swagger.json`);
 
@@ -29,13 +30,11 @@ app.post("/login", (req , res) => {
       nombre : "Jose Alfredo",
       email: "joseafedox@gmail.com"
   }
-
   jwt.sign({user}, 'llavesecreta', {expiresIn: '1m'}, (err, token) => {
       res.json({
           token
       });
   });
-
 });
 
 //it is only for send the information using the token verify in postman
@@ -56,7 +55,6 @@ app.post("/login/posts", verifyToken, (req , res) => {
 // Authorization: Bearer <token>
 function verifyToken(req, res, next){
    const bearerHeader =  req.headers['authorization'];
-
    if(typeof bearerHeader !== 'undefined'){
      //separe in two parts the string an use te second part, this part is only por the token the first par is for bearer
         const bearerToken = bearerHeader.split(" ")[1];
