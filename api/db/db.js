@@ -27,7 +27,7 @@ const db = pgp({
 })({
     host: 'localhost',
     user: 'postgres',
-    password: 'Naturales13',
+    password: 'naturales',
     database: 'management_db',
     port: 5432
 });
