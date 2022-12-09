@@ -9,28 +9,27 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="box">
+        <div class="form">
         <form id="transactions-form">
             <div>
-                <label for="transactions-form-amount">Amount to be transfered:</label>
-                <input name="amount" id="transactions-form-amount" type="number" required max="10000" min="50" step=".01">
-                <label for="transactions-form-accounts">Accounts</label>
-                <select name="account_id" id="transactions-form-accounts"></select>
+                <label for="transactions-form-amount">Amount to be transfered:</label><br>
+                <input name="amount" id="transactions-form-amount" type="number" required max="10000" min="50" step=".01"><br>
+                <label for="transactions-form-accounts">Accounts</label><br>
+                <select name="account_id" id="transactions-form-accounts"></select><br>
             </div>
-            <button id="transactions-form-save-button" type="button">Save</button>
-            <button id="transactions-form-withdraw-button" type="button">Withdraw</button>
+            <button id="transactions-form-save-button" type="button" class="button">Save</button>
+            <button id="transactions-form-withdraw-button" type="button" class="button">Withdraw</button>
         </form>
         <form id="show-form">
             <label for="transactions-form-accounts">Account to be showed:</label>
             <select name="account_id" id="transactions-form-accounts-show"></select>
             <div>
-                <label for="show-form-button">your amount in this acount is:</label>
-                <button id="show-form-button" type="button">Calculate</button>
-                <span id="show">your amount</span>
+                <button id="show-form-button" type="button" class="show">Show your Amount</button><br>
+                <span id="show">Your Amount</span>
             </div>
-            
-
         </form>
+        </div>
     </div>
 </body>
 </html>

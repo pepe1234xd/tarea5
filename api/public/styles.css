@@ -1,5 +1,65 @@
-.box {
-    height: 200px;
-    width: 200px;
-    border: 1px solid #ccc;
+body{
+    background: linear-gradient(90deg, rgb(5, 5, 5) 0%, rgb(64, 27, 84) 50%); 
+    font-family: "Roboto", sans-serif; 
 }
+.box {
+    width: 360px;
+    padding: 8%;
+    margin: auto;
+}
+.form{
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+}
+.button{
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    background:rgb(80, 80, 217);   
+    color: #FFFFFF;
+    width: 49%;
+    border: 0;
+    padding: 10px;
+    font-size: 14px;;
+    cursor: pointer;
+    margin: 0 0 15px;
+}
+.show{
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    background:rgb(80, 80, 217);   
+    color: #FFFFFF;
+    width: 100%;
+    border: 0;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0 0 15px;
+}
+.form button:hover{
+    background: rgb(118, 118, 205);
+}
+.show:hover{
+    background: rgb(118, 118, 205);
+}
+
+.form input, select,  input[type=number]{
+    background: #dbd9d9;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+span{
+    background: #dbd9d9;
+    margin:15px 0 0 ;
+    padding: 10px;
+    font-size: 14px;
+    border: 0;
+  }
