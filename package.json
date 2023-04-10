@@ -1,0 +1,40 @@
+{
+  "name": "xcsv",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "cjs/index.cjs",
+  "module": "esm/index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./esm/index.mjs",
+      "require": "./cjs/index.cjs",
+      "types": "./index.d.ts"
+    },
+    "./esm": "./esm/index.mjs",
+    "./cjs": "./cjs/index.cjs",
+    "./umd": "./umd/index.js"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "bundle": "node rollup.config.mjs",
+    "tests": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.15.11"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "xufs": "^0.3.1"
+  }
+}
