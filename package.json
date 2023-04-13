@@ -27,12 +27,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^18.15.11"
+    "dynason": "^0.2.6"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
+    "@types/humps": "^2.0.2",
     "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.11",
     "chai": "^4.3.7",
+    "humps": "^2.0.1",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
     "xufs": "^0.3.1"
