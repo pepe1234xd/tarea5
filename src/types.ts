@@ -64,30 +64,3 @@ export type CellObject =
   | undefined
   | object
   | Symbol;
-
-/** Parsing context information used to trigger certain events */
-export type ParseContext = {
-  /** Global index, indicating where in the string is the parsing process */
-  index: number;
-  /** Gets the real string length in case the text did not have an end character string */
-  slength: number;
-  /** A line to be processed as a row */
-  line: string;
-  /** Determines if the value was in quote mode (If the text existed between quote symbols) */
-  isQuoted: boolean;
-  /** Start index reference for the error function */
-  startIndex: number;
-  /** Index reference for the error function */
-  errorIndex: number;
-  /** Global pointer for the iteration process */
-  pointer: Coordinates;
-  /** The final sum of flags to determine if the parsed values should be transformed */
-  shouldTransform: boolean;
-  /**
-   * During the reducer process if the strictMode and transform options are set
-   * if a line starts and ends with "{}" or "[]", will be marked as a JSON object
-   */
-  isJSON: boolean;
-  /** Resets the values from the context */
-  reset(): void;
-};
