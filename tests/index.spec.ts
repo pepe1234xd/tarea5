@@ -1,7 +1,15 @@
 import { describe, it } from "mocha";
-import { resolve, throu, throuSync } from "xufs";
+import { resolve, throu } from "xufs";
+import humps from "humps";
 
-import { Callback, isParserTest, isCSVTest, Test, TestName } from "./types";
+import {
+  Callback,
+  isParserTest,
+  isCSVTest,
+  Test,
+  TestName,
+  isAlphaetTest as isAlphabetTest,
+} from "./types";
 import path from "path";
 
 // Tests
@@ -10,6 +18,8 @@ import createCSVTest from "./callee/csv";
 
 // System
 import url from "url";
+import { setDefaultTextFormat, setTextFormat } from "../src/text-format";
+import createAlphabetTest from "./callee/alphabet";
 
 function capitalize(value: string) {
   const subs = value.substring(0, 1).toLocaleUpperCase();
@@ -27,18 +37,19 @@ const stack: { description: string; test: Test<any>; callee: Callback<any> }[] =
 
 let self: any = this;
 async function collect() {
-  const isSystemFile = (pathname: string) => pathname.includes("system.json");
+  const isFormatFile = (pathname: string) => pathname.includes("format.json");
 
   await throu(
     {
       watcher: async (pathname) => {
-        if (!isSystemFile(pathname)) {
+        if (!isFormatFile(pathname)) {
           const key = path
             .basename(pathname)
             .replace(/.json/gi, "") as TestName;
-
           let callee: Callback<any>;
-          if (isParserTest(key)) {
+          if (isAlphabetTest(key)) {
+            callee = createAlphabetTest(key);
+          } else if (isParserTest(key)) {
             callee = createParserTest(key);
           } else if (isCSVTest(key)) {
             callee = createCSVTest(key);
@@ -51,7 +62,7 @@ async function collect() {
             assert: { type: "json" },
           })) as any;
           if (test.default) test = test.default;
-          const description = capitalize(`${key} Testing`);
+          const description = capitalize(`${humps.pascalize(key)} Testing`);
 
           stack.push({ test, description, callee });
         }
@@ -75,6 +86,8 @@ try {
       for (const item of items) {
         it(item.message, function (done) {
           if (item.skip) this.skip();
+          if (item.format) setTextFormat(item.format);
+          else setDefaultTextFormat();
           const open = callee.call(this, item, done);
           if (!open) done();
         });

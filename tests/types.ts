@@ -1,4 +1,6 @@
-type GeneralTest<T, E> = {
+import { TextFormat } from "../src/types";
+
+type GeneralTest<T, E, P = any> = {
   _id: string;
   skip: boolean;
   items: Array<
@@ -6,9 +8,18 @@ type GeneralTest<T, E> = {
       skip: boolean;
       expected: E;
       message: string;
+      format?: TextFormat;
+      throws?:
+        | string
+        | {
+            error: "";
+            params?: P;
+          };
     } & T
   >;
 };
+
+// Parse Tests
 
 type Transforms = GeneralTest<
   {
@@ -18,31 +29,32 @@ type Transforms = GeneralTest<
   string | null | undefined | number
 >;
 
-type Before = GeneralTest<
+type Process = GeneralTest<
   {
     _id: string;
-    value: string;
+    word: string;
+    isQuoted: boolean;
+    isJSON: boolean;
+  },
+  any
+>;
+
+// Alphabet Tests
+
+type FromNumber = GeneralTest<
+  {
+    _id: string;
+    number: number;
   },
   string
 >;
 
-type Between = GeneralTest<
+type GetNumber = GeneralTest<
   {
     _id: string;
-    before: string;
-    after: string;
-    round: boolean;
+    string: string;
   },
-  string
->;
-
-type Diverge = GeneralTest<
-  {
-    _id: string;
-    before: string;
-    after: string;
-  },
-  string
+  number
 >;
 
 type Criteria = GeneralTest<
@@ -172,24 +184,29 @@ type IsPositionObject = GeneralTest<
   boolean
 >;
 
-export type TestParser = "transforms" | "parse";
+export type TestAlphabet = "from-number" | "get-number";
+export type TestParser = "transforms" | "process" | "parse";
 export type TestCSV = "insert" | "update";
 
-export type TestName = TestParser | TestCSV;
+export type TestName = TestAlphabet | TestParser | TestCSV;
+
+// Validations to check mock files
+export const isAlphaetTest = (value: string): value is TestAlphabet =>
+  value === "from-number" || value === "get-number";
 export const isParserTest = (value: string): value is TestParser =>
-  value === "transforms" || value === "parse";
+  value === "transforms" || value === "process" || value === "parse";
 export const isCSVTest = (value: string): value is TestCSV =>
   value === "insert" || value === "update";
 
 export type Test<T extends TestName> = T extends "transforms"
   ? Transforms
-  : T extends "before"
-  ? Before
-  : T extends "between"
-  ? Between
-  : T extends "diverge"
-  ? Diverge
-  : T extends "criteria"
+  : T extends "process"
+  ? Process
+  : T extends "from-number"
+  ? FromNumber
+  : T extends "get-number"
+  ? GetNumber
+  : T extends "xxx"
   ? Criteria
   : T extends "onThreshold"
   ? OnThreshold
