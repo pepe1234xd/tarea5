@@ -1,4 +1,4 @@
-import { setTextFormat, format } from "./text-format.js";
+import { setTextFormat, format, setDefaultTextFormat } from "./text-format.js";
 import { parse } from "./parser/parse.js";
 import { TextFormat } from "./types.js";
 
@@ -8,8 +8,8 @@ import { TextFormat } from "./types.js";
  */
 export class XSV {
   constructor() {
-    // Populates the global with a default format
-    setTextFormat();
+    // Populates the global text format with a default format
+    setDefaultTextFormat();
   }
 
   /**
