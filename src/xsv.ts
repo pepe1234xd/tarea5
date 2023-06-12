@@ -22,7 +22,7 @@ export class XSV {
 
   /** Gets a copy from the current text format */
   public get format(): TextFormat {
-    return JSON.parse(JSON.stringify(format));
+    return structuredClone(format);
   }
 
   /** Sets the text format to be used while parsing */
