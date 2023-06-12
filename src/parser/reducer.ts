@@ -105,10 +105,12 @@ export async function reducer(csv: CSV) {
       // If was a header it means that the pointer will stay as zero position
       // and will start to be moved until the next session
       if (isHeader) {
-        // A must be a string and not a JavaScript value
+        // A header must be a string and not a JavaScript value
         if (typeof word !== "string") throw NotValidHeaderError;
         csv.headers.push(word);
-        isHeader = false;
+        // If a breaker or the end of the line was hit, it means that
+        // all of the headers were parsed
+        isHeader = isHeader && !(isNextBreaker || isNextEndOfLine);
       } else {
         // For delimiter plus line breaks or just breaks,
         // move to the beggining of the next row
