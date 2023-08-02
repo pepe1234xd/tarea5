@@ -1,6 +1,6 @@
 import { setTextFormat, format, setDefaultTextFormat } from "./text-format.js";
 import { parse } from "./parser/parse.js";
-import { TextFormat } from "./types.js";
+import { TextFormat, ValueObject } from "./types.js";
 
 /**
  * @module
@@ -13,11 +13,11 @@ export class XSV {
   }
 
   /**
-   * Parses a string into a CSV object
+   * Parses a string into a Spreadsheet object
    * @param string The CSV string that will be converted to an object
    */
-  toCSV(string: string) {
-    parse(string);
+  toSpreadsheet<V extends ValueObject>(string: string) {
+    return parse<V>(string);
   }
 
   /** Gets a copy from the current text format */

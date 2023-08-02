@@ -1,4 +1,4 @@
-import { NotValidBase26String } from "./errors";
+import { NotValidBase26String } from "../errors";
 
 const offset = "A".charCodeAt(0);
 const base = "Z".charCodeAt(0) - offset + 1;

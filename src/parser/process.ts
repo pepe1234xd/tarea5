@@ -1,7 +1,7 @@
 import { EmptyValueError, NotValidUseOfQuotes, ParseError } from "../errors.js";
 import { format } from "../text-format.js";
 import { context } from "./context.js";
-import { CSV } from "../csv/csv.js";
+import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { transforms, transformsNumber } from "./transforms.js";
 
 /**

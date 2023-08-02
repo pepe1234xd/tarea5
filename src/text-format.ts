@@ -1,7 +1,6 @@
 import { TextFormat } from "./types";
-import { NotValidEmptyValue } from "./errors";
 
-export const EMPTY_SYMBOL = Symbol("empty");
+export const ZERO_STRING = "";
 export const WINDOWS_BREAK_LINE = "\r\n";
 export const COMMA_DELIMITER = ",";
 export const QUOTE_DELIMITER = '"';
@@ -12,7 +11,6 @@ export let format: Required<TextFormat> = undefined as any;
 /** Builds the way to handle the text format during parsing */
 export function setTextFormat(v: TextFormat) {
   // Inserts the new options to the global text format
-  if (v.empty && typeof v.empty !== "symbol") throw NotValidEmptyValue;
   format = { ...format, ...v };
 }
 
@@ -23,11 +21,12 @@ export function setDefaultTextFormat() {
     quote: QUOTE_DELIMITER,
     delimiter: COMMA_DELIMITER,
     brk: WINDOWS_BREAK_LINE,
+    ignoreEmptyLines: true,
     hasEndCharacter: false,
     strictMode: true,
     hasHeaders: false,
     memoize: true,
     transform: true,
-    empty: EMPTY_SYMBOL,
+    empty: ZERO_STRING,
   };
 }

@@ -1,3 +1,4 @@
+import { alphabet } from "./alphabet.js";
 import { Position } from "../types.js";
 import { Pointer } from "./pointer.js";
 
@@ -24,26 +25,11 @@ export class Cursor implements Position {
   constructor(position?: Position) {
     if (position) {
       this.row = position.row;
-      this.column = position.column;
+      this.column =
+        typeof position.column === "string"
+          ? alphabet.getNumber(position.column)
+          : position.column;
     }
-  }
-
-  /**
-   * @param position The new position for the pointer
-   */
-  go(position: Partial<Position>) {
-    if (position.row) this.row = position.row;
-    if (position.column) this.column = position.column;
-    return this;
-  }
-
-  /**
-   * @param position Adds the passed position to the cursor
-   */
-  move(position: Partial<Position>) {
-    if (position.row) this.row += position.row;
-    if (position.column) this.column += position.column;
-    return this;
   }
 
   /**
@@ -57,9 +43,22 @@ export class Cursor implements Position {
   }
 
   /**
-   * Transforms the position onto a pointer
+   * Transforms the position into a pointer
    */
   toPointer() {
+    return new Pointer({
+      x: this.column - 1,
+      y: this.row - 1,
+    });
+  }
+
+  /**
+   * Transforms the position into a grid:
+   * - Columns will be passed alphabetically
+   * - If available headers will be used instead of the alphabet
+   * - Rows will be passed as numbers
+   */
+  toGrid() {
     return new Pointer({
       x: this.column - 1,
       y: this.row - 1,

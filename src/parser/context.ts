@@ -1,8 +1,47 @@
 import { format } from "../text-format.js";
-import { Coordinates } from "../types.js";
+import { ValueEmpty } from "../types.js";
+
+/**
+ * The processed value will be saved then "x" will update the value (plus one)
+ * each time a delimiter is found in the string.
+ * The pointer is meant to reset to "{x:0,y:y++}" each time a breaker is added
+ * to point to the new row that will be added.
+ */
+class ContextPointer {
+  /** X is stable state if it's value is the same at every skip */
+  isStableX: boolean = true;
+  /** The previous larges "x" reached before every skip */
+  lastLargestX: number = 0;
+  /** X coordintate */
+  x: number = 0;
+  /** Y coordintate */
+  y: number = 0;
+
+  /**
+   * Moves to the right the pointer "x++"
+   */
+  right() {
+    this.x++;
+  }
+
+  /**
+   * Moves to the start of the next current row "{x:0,y:y++}"
+   */
+  skip() {
+    // Saves the last largest x before reset and checks if the x is stable
+    // at every new skip
+    if (this.y > 0 && this.isStableX)
+      this.isStableX = this.lastLargestX === this.x;
+    this.lastLargestX = this.x;
+    this.x = 0;
+    this.y++;
+  }
+}
 
 /** Parsing context information used to trigger certain events */
 export class ParseContext {
+  /** The string to be working on */
+  string: string;
   /** Global index, indicating where in the string is the parsing process */
   index: number;
   /** Gets the real string length in case the text did not have an end character string */
@@ -16,7 +55,7 @@ export class ParseContext {
   /** Index reference for the error function */
   errorIndex: number;
   /** Global pointer for the iteration process */
-  pointer: Coordinates;
+  pointer: ContextPointer;
   /** The final sum of flags to determine if the parsed values should be transformed */
   shouldTransform: boolean;
   /**
@@ -32,10 +71,10 @@ export class ParseContext {
 
   /** @param string The string to be parsed as a CSV object */
   constructor(string: string) {
+    this.string = string;
     /** Real string length in case that has no end character the string */
     this.slength = format.hasEndCharacter ? string.length - 1 : string.length;
     this.index = 0;
-    this.slength = 0;
     this.startIndex = 0;
     this.errorIndex = 0;
     this.isQuoted = false;
@@ -43,10 +82,7 @@ export class ParseContext {
     this.isJSON = false;
     this.shouldTransform = false;
     this.quoteRegex = new RegExp(format.quote, "gum");
-    this.pointer = {
-      x: 0,
-      y: 0,
-    };
+    this.pointer = new ContextPointer();
   }
 
   /** Resets the regex to be used for the process function */
@@ -56,6 +92,7 @@ export class ParseContext {
 
   /** Resets the values from the context */
   reset() {
+    this.string = "";
     this.index = 0;
     this.startIndex = 0;
     this.errorIndex = 0;
@@ -64,10 +101,7 @@ export class ParseContext {
     this.isJSON = false;
     this.shouldTransform = false;
     this.quoteRegex.lastIndex = 0;
-    this.pointer = {
-      x: 0,
-      y: 0,
-    };
+    this.pointer = new ContextPointer();
   }
 }
 

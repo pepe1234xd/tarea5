@@ -11,6 +11,8 @@ export type TextFormat = {
   hasHeaders?: boolean;
   /** If set an open quoted value that was never closed will be rejected */
   strictMode?: boolean;
+  /** Empty lines (No content between two breakers) will be ignored */
+  ignoreEmptyLines?: boolean;
   /** Use in case your string contains the end character */
   hasEndCharacter?: boolean;
   /**
@@ -23,8 +25,11 @@ export type TextFormat = {
    * - JSON Objects
    */
   transform?: boolean;
-  /** The special symbol to be used as the representation for "empty" values */
-  empty?: Symbol;
+  /**
+   * The empty value to place when a empty cell is found during parsing
+   * @default empty = ""
+   */
+  empty?: ValueEmpty;
 };
 
 export type Props = {
@@ -40,14 +45,29 @@ export type Props = {
  */
 export type Position = {
   row: number;
-  column: number;
+  column: number | string;
 };
+
 /**
  * A x, y coordintates
  */
-export type Coordinates = {
+export type Pointer = {
   x: number;
   y: number;
+};
+
+type TopLimit = "@top";
+type RightLimit = "@right";
+export type LineLimit = TopLimit | RightLimit;
+export type RangeLimit =
+  | "@left-up"
+  | "@left-down"
+  | "@right-down"
+  | "@right-up";
+export type CellSelector = number | string | RightLimit;
+export type RangeSelector = {
+  row: CellSelector | RangeLimit;
+  column: CellSelector | RangeLimit;
 };
 
 export type Size = {
@@ -55,12 +75,44 @@ export type Size = {
   columns: number;
 };
 
+export type DefineValueEmpty<E extends ValueEmpty | undefined> =
+  E extends undefined ? "" : E;
+/** Reprecents a cell value that is empty */
+export type ValueEmpty = "" | 0 | null;
 /** Represents the types that a cell from the CSV object may contain */
-export type CellObject =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | object
-  | Symbol;
+export type ValueObject = string | number | boolean | object | ValueEmpty;
+/** Represents the CSV content */
+export type ValueData<O extends ValueObject> = O[][];
+/** The unique format from the spreadsheet */
+export type SpreadhseetFormat = {
+  /** The word quotes */
+  quote: string;
+  /** The line delimiter */
+  delimiter: string;
+  /** The line breaker */
+  brk: string;
+};
+/** Represents the Spreadsheet Data */
+export interface SpreadsheetContent {
+  /** The string that was converted to a CSV object */
+  readonly string: string;
+  /**
+   * Returns if this object is a table or not
+   */
+  readonly isTable: boolean;
+  /**
+   * If contains headers, will be stored here as an array
+   * if not the array will be empty
+   */
+  readonly headers: string[];
+  /**
+   * Passed from "Options" shows if the current CSV file
+   * has headers
+   */
+  readonly hasHeaders: boolean;
+  /**
+   * If table mode is on, will describe the table size
+   * @emits IsNotTableFormatError if the object is not in table format
+   */
+  readonly size: Size;
+}

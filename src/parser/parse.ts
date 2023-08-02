@@ -1,22 +1,21 @@
 import {
   EmptyStringError,
   FirstCharacterInvalidError,
-  isEmptySet,
   isEmptyString,
-  isFirstCharacterDelimiter,
   isFirstCharacterQuote,
-} from "../validations.js";
+} from "../errors.js";
 import { format } from "../text-format.js";
-import { context } from "./context.js";
-import { CSV } from "../csv/csv.js";
+import { createContext } from "./context.js";
+import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { reducer } from "./reducer.js";
+import { ValueObject } from "../types.js";
 
 /** A stringified CSV object */
 let stringified: boolean = false;
 let memoized: string | null = null;
 
 /** The current CSV data */
-let csv: CSV;
+let _csv: Spreadsheet<any>;
 
 /** Cleans the current memoization state */
 function cleanMemoization() {
@@ -28,47 +27,47 @@ function cleanMemoization() {
  * This function parses a string into a CSV object
  * @param {string} string The string to be processed
  */
-export async function parse(string: string) {
-  /** Real string length in case that has no end character the string */
-  context.slength = format.hasEndCharacter ? string.length - 1 : string.length;
-
-  // Creates a default CSV
-  csv = new CSV(string);
+export function parse<V extends ValueObject>(string: string) {
+  // Creates a new parse context
+  createContext(string);
 
   // If the memoization option is on, check if the value was parsed already
   if (format.memoize) {
     // Rterun the stored data if if memoization is found
-    if (memoized === string) return csv;
+    if (memoized === string) return _csv;
   }
 
-  // Handling generic cases and ensure the string is at least 2 characters
+  // If strict mode is on and there is no content throw an error
   if (isEmptyString(string)) {
-    // If strict mode is on this is considered an error
     if (format.strictMode) {
       cleanMemoization();
       throw EmptyStringError;
     } else {
-      csv.isEmpty = true;
-      csv.isTable = false;
-      return csv;
+      return new Spreadsheet<any>([[format.empty]], true, [], false, {
+        quote: format.quote,
+        delimiter: format.delimiter,
+        brk: format.brk,
+      });
     }
   }
-  if (context.slength === 0 && isFirstCharacterQuote(string)) {
+  // If the content is just the character quote return an error
+  else if (isFirstCharacterQuote(string)) {
     cleanMemoization();
     throw FirstCharacterInvalidError;
   }
-  if (isFirstCharacterDelimiter(string) || isEmptySet(string)) {
-    csv.isEmpty = true;
-    csv.isTable = false;
-    return csv;
-  } else {
-    csv.isEmpty = false;
-  }
 
   // Reduce all the values from the string to a valid object
-  await reducer(csv);
+  const { data, headers, isTable } = reducer();
   // Store new memoized on parsing success
   memoized = string;
+
+  // Creates a default CSV
+  const csv = new Spreadsheet<V>(data, isTable, headers, format.hasHeaders, {
+    quote: format.quote,
+    delimiter: format.delimiter,
+    brk: format.brk,
+  });
+  _csv = csv;
 
   // Return a copy to avoid reference issues with the memoized version
   return csv.clone();

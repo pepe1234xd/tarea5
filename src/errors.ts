@@ -1,7 +1,8 @@
 import { replacer, Matcher } from "dynason";
 import { WINDOWS_BREAK_LINE, format } from "./text-format.js";
 import { context } from "./parser/context.js";
-import { CSV } from "./csv/csv.js";
+import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
+import { ValueData, ValueObject } from "./types.js";
 
 // Errors to throw on validation failed
 export const FirstCharacterInvalidError = new Error(
@@ -15,13 +16,12 @@ export const EmptyValueError = function () {
     }`,
   );
 };
-export const ObjectNeverClosedError = function () {
-  return new Error(
+export const ObjectNeverClosedError = () =>
+  new Error(
     `The object was never closed, it was opened since position ${
       context.slength - context.line.length
     }`,
   );
-};
 export const IsNotTableFormatError = new Error(
   "The CSV object is not in table format",
 );
@@ -33,43 +33,92 @@ export const NotValidEmptyValue = new Error(
   "The empty symbol must be a special JavaScript symbol",
 );
 
-export const NotValidUseOfQuotes = new Error(
-  `To avoid compatiblity issues, quotes as a character can only be used within a quoted line and must be input twice to escape it (This only apply if is not a JSON Object or Array).
-  - "a""b""c" ✓ (Valid)
-  - "a"b"c"   ⛌ (Invalid)
-  - a""b""c   ⛌ (Invalid)`,
-);
+export const NotValidUseOfQuotes = new Error(`
+To avoid compatiblity issues, quotes as a character can only be used within a quoted line and must be input twice to escape it (This only apply if is not a JSON Object or Array).
+ - "a""b""c" ✓ (Valid)
+ - "a"b"c"   ⛌ (Invalid)
+ - a""b""c   ⛌ (Invalid)
+`);
 
 export const NotValidBase26String = new Error(
   'Only letters from "a" to "z" can be used to match a column',
 );
 
+export const NotValidMovement = new Error("The movement string is not valid");
+
 // Validations for the parsing or the serialization from an object
 
 /**
  * Checks if the string is not empty
- * @param slength
+ * @param string The value to be checked
  * @example const string = "";
  */
 export const isEmptyString = (string: string) => string.length < 1;
 /**
- * Checks if the set starts with a the quote character
- * @example string = '"';
+ * Checks if the string is a quote
+ * @param string The value to be checked
+ * @example const string = '"';
  */
 export const isFirstCharacterQuote = (string: string) =>
-  string[0] === format.quote;
+  string === format.quote;
+
+const NOT_TABLE_ERROR_TEMPLATE_STRING = `
+The CSV object must be validated as a table to take the following action:
+<description/>
+`;
+
 /**
- * Checks if the set starts with a valid character
- * @example string = "'";
+ * Thrown when an action is trying to be taken but the CSV is required to be a table
  */
-export const isFirstCharacterDelimiter = (string: string) =>
-  string[0] === format.delimiter;
+export const isNotTableError = (description: string) =>
+  new Error(
+    replacer(NOT_TABLE_ERROR_TEMPLATE_STRING, { description }, { mode: "xml" }),
+  );
+
+export const NotAllowedElementToSaveError = new Error(`
+Values like undefined, symbols, classes and functions are not allowed, the only
+primitives allowed to store are:
+ - Text
+ - Booleans
+ - Numbers
+ - Null
+ - Objects or Arrays containing the previous ones
+`);
+
 /**
- * Checks if the set is valid but empty
- * @example string = "'";
+ * Thrown when an action is trying to access a element in that is undefined
  */
-export const isEmptySet = (string: string) =>
-  (string = format.delimiter + format.delimiter);
+export const FoundUndefinedElementError = (x: number, y: number) => {
+  const column = y + 1;
+  const row = x + 1;
+  return new Error(
+    `At column: ${column}, row: ${row} the element is undefined or does not exits`,
+  );
+};
+
+/**
+ * Thrown when an action is trying to access a column in that is undefined
+ */
+export const NotFoundColumnError = (y: number) =>
+  new Error(`The column ${y + 1} was not found in one of the lines`);
+/**
+ * Thrown when an action is trying to access a row in that is undefined
+ */
+export const NotFoundRowError = (x: number) =>
+  new Error(`The row ${x + 1} was not found in one of the lines`);
+
+const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = `
+"<value/>" is not a valid range selector, please use one of the following valid selectors:
+  - @left-up
+  - @right-up
+  - @left-down
+  - @right-down
+`;
+/**
+ * Thrown when an invalid range string selector is passed
+ */
+export const InvalidRangeSelector = (selector: string) =>
+  new Error(replacer(INVAL_RANGE_SELECTOR_TEMPLATE_STRING, { selector }));
 
 /**
  * Parse error template string
@@ -87,7 +136,7 @@ _____________________________________
 /**
  * Creates a parse error object
  */
-export const ParseError = (instance: CSV) => {
+export const ParseError = (instance: Spreadsheet<any>) => {
   const { errorIndex, slength, startIndex } = context;
   const { brk } = format;
 
@@ -110,7 +159,7 @@ export const ParseError = (instance: CSV) => {
   };
 
   // Replace real breaking spaces with their string representation
-  let string = instance.string.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+  let string = context.string.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
 
   // Adding breakline message in case is not using the windows default break line
   if (brk === WINDOWS_BREAK_LINE)
