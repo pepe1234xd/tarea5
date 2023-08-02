@@ -55,7 +55,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           });
           expect(csv.string).to.eql(expected);
         },
-        function (is: InvalidCase) {
+        function (is: InvalidCase | ValueData<any>, start: RangeSelector) {
           const csv = buildCSV({
             data: [["a"]],
             content: {
@@ -65,8 +65,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
             },
           });
 
-          const _values: ValueData<any> = [[]];
-          const selector = { row: 1, column: 1 };
+          let _values: ValueData<any> = [[]];
 
           switch (is) {
             case "undefined":
@@ -85,9 +84,12 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
               const _function = () => {};
               _values[0].push(_function);
               break;
+            default:
+              _values = is;
+              break;
           }
 
-          csv.bulk(_values, selector);
+          csv.bulk(_values, start);
         },
       );
     case "read":
