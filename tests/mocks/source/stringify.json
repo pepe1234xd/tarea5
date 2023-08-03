@@ -1,0 +1,66 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "object": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"e\",\"f\"\r\n\"g\",\"h\",\"i\"",
+            "message": "Should transform the array to a string"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when undefined is passsed",
+            "params": [
+                "undefined"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a symbol is passsed",
+            "params": [
+                "symbol"
+            ]
+        },
+        {
+            "skip": false,
+            "is": "function",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a function is passsed",
+            "params": [
+                "function"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a non primitive object (a json) is passsed",
+            "params": [
+                "class"
+            ]
+        }
+    ]
+}

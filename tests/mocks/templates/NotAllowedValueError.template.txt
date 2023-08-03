@@ -1,0 +1,8 @@
+
+Values like undefined, symbols, classes and functions are not allowed, the only
+primitives allowed for the CSV format:
+ - Text
+ - Booleans
+ - Numbers
+ - Null
+ - Objects or Arrays containing the previous ones

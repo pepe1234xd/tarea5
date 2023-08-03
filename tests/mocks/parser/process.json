@@ -1,0 +1,106 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "word": "",
+            "isQuoted": false,
+            "format": {
+                "empty": 0
+            },
+            "expected": 0,
+            "message": "Should return the empty value from an empty cell"
+        },
+        {
+            "skip": false,
+            "word": "\"\"",
+            "isQuoted": true,
+            "expected": "\"",
+            "message": "Should reduce it as a single quote"
+        },
+        {
+            "skip": false,
+            "word": "a",
+            "isQuoted": false,
+            "expected": "a",
+            "message": "Should return any non special character as it is"
+        },
+        {
+            "skip": false,
+            "word": "a\"\"bb\"\"c\"\"",
+            "isQuoted": true,
+            "expected": "a\"bb\"c\"",
+            "message": "Should resolve any combination of special and normal characters"
+        },
+        {
+            "skip": false,
+            "word": "{\"a\":1}",
+            "isQuoted": true,
+            "isJSON": true,
+            "expected": {
+                "a": 1
+            },
+            "message": "Should transform a text into an object"
+        },
+        {
+            "skip": false,
+            "word": "[\"a\"]",
+            "isQuoted": true,
+            "isJSON": true,
+            "expected": [
+                "a"
+            ],
+            "message": "Should transform a text into an array"
+        },
+        {
+            "skip": false,
+            "word": "ab\"\"\"\"\"\"cd\"\"\"\"\"\"ef",
+            "isQuoted": true,
+            "isJSON": false,
+            "format": {
+                "quote": "\"\"\""
+            },
+            "expected": "ab\"\"\"cd\"\"\"ef",
+            "message": "Should resolve quotes longer than one character"
+        },
+        {
+            "skip": false,
+            "word": "ab''cd''ef",
+            "isQuoted": true,
+            "isJSON": false,
+            "format": {
+                "quote": "'"
+            },
+            "expected": "ab'cd'ef",
+            "message": "Should resolve custom quotes"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotValidUseOfQuotes",
+            "throws": {},
+            "message": "Should fail as the quotes are separated",
+            "params": [
+                "\"a\"",
+                {
+                    "isQuoted": true,
+                    "isJSON": false
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotValidUseOfQuotes",
+            "throws": {},
+            "message": "Should fail as the JSON object is not quoted",
+            "params": [
+                "{\"a\":1}",
+                {
+                    "isQuoted": false,
+                    "isJSON": false
+                }
+            ]
+        }
+    ]
+}

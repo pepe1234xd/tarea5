@@ -1,0 +1,304 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "selector": {
+                "row": 2,
+                "column": 2
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "w",
+                    "x"
+                ],
+                [
+                    "y",
+                    "z"
+                ]
+            ],
+            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"w\",\"x\"\r\n\"g\",\"y\",\"z\"",
+            "message": "Should change the value at the selected number position"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": {
+                "row": "@right",
+                "column": "@right"
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": "X",
+            "expected": "\"a\",\"b\"\r\n\"c\",\"X\"",
+            "message": "Should change the value at the selected cell limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "selector": {
+                "row": 2,
+                "column": 2
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "w",
+                    "x",
+                    1
+                ],
+                [
+                    "y",
+                    "z",
+                    2
+                ],
+                [
+                    0,
+                    0,
+                    3
+                ]
+            ],
+            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"w\",\"x\"\r\n\"g\",\"y\",\"z\"",
+            "message": "Should ignore out of boundaries values"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": "@left-top",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "X"
+                ]
+            ],
+            "expected": "\"X\",\"b\"\r\n\"c\",\"d\"",
+            "message": "Should write values to left top limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": "@left-top",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "X"
+                ]
+            ],
+            "expected": "\"X\",\"b\"\r\n\"c\",\"d\"",
+            "message": "Should write values to left top limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": "@left-bottom",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "X"
+                ]
+            ],
+            "expected": "\"a\",\"b\"\r\n\"X\",\"d\"",
+            "message": "Should write values to left bottom limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": "@right-bottom",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "X"
+                ]
+            ],
+            "expected": "\"a\",\"b\"\r\n\"c\",\"X\"",
+            "message": "Should write values to right bottom limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": "@right-top",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "X"
+                ]
+            ],
+            "expected": "\"a\",\"X\"\r\n\"c\",\"d\"",
+            "message": "Should write values to right top limit"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when undefined is passsed",
+            "params": [
+                "undefined",
+                {
+                    "row": 1,
+                    "column": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a symbol is passsed",
+            "params": [
+                "symbol",
+                {
+                    "row": 1,
+                    "column": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "is": "function",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a function is passsed",
+            "params": [
+                "function",
+                {
+                    "row": 1,
+                    "column": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a non primitive object (a json) is passsed",
+            "params": [
+                "class",
+                {
+                    "row": 1,
+                    "column": 1
+                }
+            ]
+        }
+    ]
+}

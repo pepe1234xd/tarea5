@@ -1,0 +1,125 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": {
+                "row": 1,
+                "column": 1
+            },
+            "content": {
+                "isTable": true,
+                "isEmpty": false,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": "X",
+            "expected": "\"X\",\"b\"\r\n\"c\",\"d\"",
+            "message": "Should change the value at the selected number position"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": {
+                "row": "@right",
+                "column": "@bottom"
+            },
+            "content": {
+                "isTable": true,
+                "isEmpty": false,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": "X",
+            "expected": "\"a\",\"b\"\r\n\"c\",\"X\"",
+            "message": "Should change the value at the selected cell limit"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when undefined is passsed",
+            "params": [
+                "undefined",
+                1,
+                1
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a symbol is passsed",
+            "params": [
+                "symbol",
+                1,
+                1
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a function is passsed",
+            "params": [
+                "function",
+                1,
+                1
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a non primitive object is passsed",
+            "params": [
+                "class",
+                1,
+                1
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotFoundColumnError",
+            "throws": "The column 2 was not found in one of the lines",
+            "message": "Should throw an error when out of bounds column is trying to be reached",
+            "params": [
+                "any",
+                1,
+                2
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotFoundRowError",
+            "throws": "The row 2 was not found in one of the lines",
+            "message": "Should throw an error when out of bounds row is trying to be reached",
+            "params": [
+                "any",
+                2,
+                1
+            ]
+        }
+    ]
+}

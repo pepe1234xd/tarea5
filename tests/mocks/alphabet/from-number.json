@@ -1,0 +1,23 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "number": 1,
+            "expected": "A",
+            "message": "Should transform to letter"
+        },
+        {
+            "skip": false,
+            "number": 27,
+            "expected": "AA",
+            "message": "Should transform to letters numbers beyond Z"
+        },
+        {
+            "skip": false,
+            "number": 703,
+            "expected": "AAA",
+            "message": "Should transform to letters with more than 2 characters"
+        }
+    ]
+}

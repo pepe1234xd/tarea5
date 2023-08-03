@@ -1,0 +1,40 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "string": "A",
+            "expected": 1,
+            "message": "Should transform to number"
+        },
+        {
+            "skip": false,
+            "string": "AA",
+            "expected": 27,
+            "message": "Should transform concatenations"
+        },
+        {
+            "skip": false,
+            "string": "ABC",
+            "expected": 731,
+            "message": "Should transform strings longer than 2 characters"
+        },
+        {
+            "skip": false,
+            "string": "aAa",
+            "expected": 703,
+            "message": "Should be case insensitive"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotValidBase26String",
+            "throws": "Only letters from \"a\" to \"z\" can be used to match a column",
+            "message": "Should fail when characters that are not between \"A\" and \"Z\" exists",
+            "params": [
+                "AB@"
+            ]
+        }
+    ]
+}

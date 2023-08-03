@@ -1,0 +1,55 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "value": "string",
+            "expected": true,
+            "message": "Should allow string values"
+        },
+        {
+            "skip": false,
+            "value": 0,
+            "expected": true,
+            "message": "Should allow numbers values"
+        },
+        {
+            "skip": false,
+            "value": false,
+            "expected": true,
+            "message": "Should allow \"false\" values"
+        },
+        {
+            "skip": false,
+            "value": true,
+            "expected": true,
+            "message": "Should allow \"true\" values"
+        },
+        {
+            "skip": false,
+            "value": null,
+            "expected": true,
+            "message": "Should allow \"null\" values"
+        },
+        {
+            "skip": false,
+            "value": {
+                "string": "string",
+                "number": 0,
+                "boolean": true
+            },
+            "expected": true,
+            "message": "Should allow objects with primitives"
+        },
+        {
+            "skip": false,
+            "value": [
+                "string",
+                0,
+                false
+            ],
+            "expected": true,
+            "message": "Should allow arrays with primitives"
+        }
+    ]
+}

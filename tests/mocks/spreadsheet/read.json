@@ -1,0 +1,55 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": {
+                "row": 1,
+                "column": 2
+            },
+            "content": {
+                "isTable": true,
+                "isEmpty": false,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "c",
+            "message": "Should read the value at the selected number position"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "selector": {
+                "row": "@right",
+                "column": "@right"
+            },
+            "content": {
+                "isTable": true,
+                "isEmpty": false,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "d",
+            "message": "Should read the value at the selected cell limit"
+        }
+    ]
+}

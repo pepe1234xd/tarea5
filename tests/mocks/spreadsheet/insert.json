@@ -1,0 +1,236 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "options": {
+                "start": 2
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "u",
+                    "v",
+                    "w"
+                ],
+                [
+                    "x",
+                    "y",
+                    "z"
+                ]
+            ],
+            "expected": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "u",
+                    "v",
+                    "w"
+                ],
+                [
+                    "x",
+                    "y",
+                    "z"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "message": "Should insert the value at the selected number position"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "options": {
+                "start": "@bottom",
+                "after": true
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "x",
+                    "y"
+                ]
+            ],
+            "expected": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ],
+                [
+                    "x",
+                    "y"
+                ]
+            ],
+            "message": "Should insert the value at the selected cell limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ],
+                [
+                    "e",
+                    "f"
+                ]
+            ],
+            "options": {
+                "start": 1
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "writtable": [
+                [
+                    "w",
+                    "x",
+                    1
+                ],
+                [
+                    "y",
+                    "z",
+                    2
+                ],
+                [
+                    0,
+                    0,
+                    3
+                ]
+            ],
+            "expected": [
+                [
+                    "w",
+                    "x"
+                ],
+                [
+                    "y",
+                    "z"
+                ],
+                [
+                    0,
+                    0
+                ],
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ],
+                [
+                    "e",
+                    "f"
+                ]
+            ],
+            "message": "Should ignore out of boundaries values on insertion"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when undefined is passsed",
+            "params": [
+                "undefined",
+                {
+                    "start": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a symbol is passsed",
+            "params": [
+                "symbol",
+                {
+                    "start": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "is": "function",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a function is passsed",
+            "params": [
+                "function",
+                {
+                    "start": 1
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "message": "Should throw an error when a non primitive object (a json) is passsed",
+            "params": [
+                "class",
+                {
+                    "start": 1
+                }
+            ]
+        }
+    ]
+}

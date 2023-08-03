@@ -1,0 +1,177 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                [
+                    "d",
+                    "e",
+                    "f"
+                ],
+                [
+                    "g",
+                    "h",
+                    "i"
+                ]
+            ],
+            "from": {
+                "row": 1,
+                "column": 1
+            },
+            "to": {
+                "row": 2,
+                "column": 2
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "d",
+                    "e"
+                ]
+            ],
+            "message": "Should read the value at the selected number position"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "from": {
+                "row": 2,
+                "column": 2
+            },
+            "to": {
+                "row": "@right",
+                "column": "@bottom"
+            },
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [
+                    [
+                        "d"
+                    ]
+                ]
+            },
+            "expected": [
+                [
+                    "d"
+                ]
+            ],
+            "message": "Should read the value at the selected cell limit"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "from": "@right-top",
+            "to": "@right-bottom",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": [
+                [
+                    "b"
+                ],
+                [
+                    "d"
+                ]
+            ],
+            "message": "Should read values for the right top limits"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "from": "@left-top",
+            "to": "@left-bottom",
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": [
+                [
+                    "a"
+                ],
+                [
+                    "c"
+                ]
+            ],
+            "message": "Should read values for the left top limits"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "NotFoundColumnError",
+            "throws": "The column 2 was not found in one of the lines",
+            "message": "Should throw an error when is trying to read a non existsing column",
+            "params": [
+                {
+                    "row": 1,
+                    "column": 1
+                },
+                {
+                    "row": 1,
+                    "column": 4
+                }
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotFoundRowError",
+            "throws": "The row 2 was not found in one of the lines",
+            "message": "Should throw an error when is trying to read a non existsing row",
+            "params": [
+                {
+                    "row": 1,
+                    "column": 1
+                },
+                {
+                    "row": 4,
+                    "column": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "string": "abc",
+            "expected": "abc",
+            "message": "Should keep it as string"
+        },
+        {
+            "skip": false,
+            "string": "123",
+            "expected": 123,
+            "message": "Should transform the integer"
+        },
+        {
+            "skip": false,
+            "string": "+123",
+            "expected": 123,
+            "message": "Should transform the positive integer"
+        },
+        {
+            "skip": false,
+            "string": "-123",
+            "expected": -123,
+            "message": "Should transform the negative integer"
+        },
+        {
+            "skip": false,
+            "string": "123.45",
+            "expected": 123.45,
+            "message": "Should transform the number with decimals"
+        },
+        {
+            "skip": false,
+            "string": "-123.45",
+            "expected": -123.45,
+            "message": "Should transform the negative number with decimals"
+        },
+        {
+            "skip": false,
+            "string": "12e5",
+            "expected": 1200000,
+            "message": "Should transform the number with positive exponent"
+        },
+        {
+            "skip": false,
+            "string": "12e-5",
+            "expected": 0.00012,
+            "message": "Should transform the number with negative exponent"
+        },
+        {
+            "skip": false,
+            "string": "000123",
+            "expected": 123,
+            "message": "Should transform and ignore the leading zeroes"
+        },
+        {
+            "skip": false,
+            "string": "0b111",
+            "expected": 7,
+            "message": "Should transform binary numbers"
+        },
+        {
+            "skip": false,
+            "string": "0o10",
+            "expected": 8,
+            "message": "Should transform octagonal numbers"
+        },
+        {
+            "skip": false,
+            "string": "0xBABE",
+            "expected": 47806,
+            "message": "Should transform hexadecimal numbers"
+        },
+        {
+            "skip": false,
+            "string": "0xBABE",
+            "expected": 47806,
+            "message": "Should transform hexadecimal numbers"
+        },
+        {
+            "skip": false,
+            "string": "12e999",
+            "expected": 99e999,
+            "message": "Should transform any value beyond JavaScript 'Infinity' as is"
+        },
+        {
+            "skip": false,
+            "string": "-12e999",
+            "expected": -99e999,
+            "message": "Should transform any value beyond JavaScript negative 'Infinity' as is"
+        },
+        {
+            "skip": false,
+            "string": "null",
+            "expected": null,
+            "message": "Should transform lower case string null"
+        },
+        {
+            "skip": false,
+            "string": "NULL",
+            "expected": null,
+            "message": "Should transform upper case string null"
+        },
+        {
+            "skip": false,
+            "string": "undefined",
+            "expected": "undefined",
+            "message": "Should transform lower case string undefined"
+        },
+        {
+            "skip": false,
+            "string": "TRUE",
+            "expected": true,
+            "message": "Should transform lower case string true"
+        },
+        {
+            "skip": false,
+            "string": "true",
+            "expected": true,
+            "message": "Should transform upper case string true"
+        },
+        {
+            "skip": false,
+            "string": "false",
+            "expected": false,
+            "message": "Should transform lower case string false"
+        },
+        {
+            "skip": false,
+            "string": "FALSE",
+            "expected": false,
+            "message": "Should transform upper case string false"
+        },
+        {
+            "skip": false,
+            "string": "{valueOf:function(){return 12}}",
+            "expected": "{valueOf:function(){return 12}}",
+            "message": "Should avoid to run script from valueOf function"
+        },
+        {
+            "skip": false,
+            "string": "{toString:function(){return \"12\"}}",
+            "expected": "{toString:function(){return \"12\"}}",
+            "message": "Should avoid to run script from toString function"
+        }
+    ]
+}

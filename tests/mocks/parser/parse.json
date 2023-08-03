@@ -1,0 +1,371 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "string": "a,b,c",
+            "expected": {
+                "string": "\"a\",\"b\",\"c\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 3,
+                    "rows": 1
+                },
+                "data": [
+                    [
+                        "a",
+                        "b",
+                        "c"
+                    ]
+                ]
+            },
+            "message": "Should transform a single row"
+        },
+        {
+            "skip": false,
+            "string": "a\r\nb\r\nc",
+            "expected": {
+                "string": "\"a\"\r\n\"b\"\r\n\"c\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 1,
+                    "rows": 3
+                },
+                "data": [
+                    [
+                        "a"
+                    ],
+                    [
+                        "b"
+                    ],
+                    [
+                        "c"
+                    ]
+                ]
+            },
+            "message": "Should transform a single column"
+        },
+        {
+            "skip": false,
+            "string": "a,\r\nb,\r\nc,d",
+            "expected": {
+                "string": "\"a\",\"\"\r\n\"b\",\"\"\r\n\"c\",\"d\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 2,
+                    "rows": 3
+                },
+                "data": [
+                    [
+                        "a",
+                        ""
+                    ],
+                    [
+                        "b",
+                        ""
+                    ],
+                    [
+                        "c",
+                        "d"
+                    ]
+                ]
+            },
+            "message": "Should add commas followed by breaks as an empty value and finally a new row"
+        },
+        {
+            "skip": false,
+            "string": "a,b\r\nc,d",
+            "expected": {
+                "string": "\"a\",\"b\"\r\n\"c\",\"d\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 2,
+                    "rows": 2
+                },
+                "data": [
+                    [
+                        "a",
+                        "b"
+                    ],
+                    [
+                        "c",
+                        "d"
+                    ]
+                ]
+            },
+            "message": "Should transforms a single 2x2 matrix"
+        },
+        {
+            "skip": false,
+            "string": "a,,b",
+            "expected": {
+                "string": "\"a\",\"\",\"b\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 3,
+                    "rows": 1
+                },
+                "data": [
+                    [
+                        "a",
+                        "",
+                        "b"
+                    ]
+                ]
+            },
+            "message": "Should resolve empty values between delimiters"
+        },
+        {
+            "skip": false,
+            "string": "a\r\n\r\nb",
+            "expected": {
+                "string": "\"a\"\r\n\"b\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 1,
+                    "rows": 2
+                },
+                "data": [
+                    [
+                        "a"
+                    ],
+                    [
+                        "b"
+                    ]
+                ]
+            },
+            "message": "Should ignore empty values between breakers"
+        },
+        {
+            "skip": false,
+            "string": "a\r\n\"\"\r\nb",
+            "format": {
+                "ignoreEmptyLines": false
+            },
+            "expected": {
+                "string": "\"a\"\r\n\"\"\r\n\"b\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 1,
+                    "rows": 3
+                },
+                "data": [
+                    [
+                        "a"
+                    ],
+                    [
+                        ""
+                    ],
+                    [
+                        "b"
+                    ]
+                ]
+            },
+            "message": "Should resolve empty values between breakers"
+        },
+        {
+            "skip": false,
+            "string": "",
+            "format": {
+                "strictMode": false
+            },
+            "expected": {
+                "string": "\"\"",
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": [],
+                "size": {
+                    "columns": 1,
+                    "rows": 1
+                },
+                "data": [
+                    [
+                        ""
+                    ]
+                ]
+            },
+            "message": "Should return an empty table on zero string"
+        },
+        {
+            "skip": false,
+            "string": "a,b,c\r\nd,e",
+            "format": {
+                "strictMode": false
+            },
+            "expected": {
+                "string": "\"a\",\"b\",\"c\"\r\n\"d\",\"e\"",
+                "isTable": false,
+                "hasHeaders": false,
+                "headers": [],
+                "data": [
+                    [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    [
+                        "d",
+                        "e"
+                    ]
+                ]
+            },
+            "message": "Should return a valid object but indicate that is not a table"
+        },
+        {
+            "skip": false,
+            "string": "A,B,C\r\na,b,c",
+            "format": {
+                "hasHeaders": true
+            },
+            "expected": {
+                "string": "\"A\",\"B\",\"C\"\r\n\"a\",\"b\",\"c\"",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "A",
+                    "B",
+                    "C"
+                ],
+                "size": {
+                    "columns": 3,
+                    "rows": 1
+                },
+                "data": [
+                    [
+                        "a",
+                        "b",
+                        "c"
+                    ]
+                ]
+            },
+            "message": "Should save the headers then parse the data"
+        },
+        {
+            "skip": false,
+            "string": "A,B,C\r\na,b",
+            "format": {
+                "hasHeaders": true
+            },
+            "expected": {
+                "string": "\"A\",\"B\",\"C\"\r\n\"a\",\"b\"",
+                "isTable": false,
+                "hasHeaders": true,
+                "headers": [
+                    "A",
+                    "B",
+                    "C"
+                ],
+                "data": [
+                    [
+                        "a",
+                        "b"
+                    ]
+                ]
+            },
+            "message": "Should transform the headers but mark the CSV string as not table"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "FirstCharacterInvalidError",
+            "throws": "Text began with an invalid character",
+            "message": "Should throw error when the first character is a quote the string lenght is only 1",
+            "params": [
+                "\""
+            ]
+        },
+        {
+            "skip": false,
+            "name": "EmptyStringError",
+            "throws": "Trying to parse empty string",
+            "message": "Should throw error when strict mode and is empty",
+            "params": [
+                ""
+            ]
+        },
+        {
+            "skip": false,
+            "name": "NotValidHeaderError",
+            "throws": "The object was never closed, it was opened since position 8",
+            "message": "Should detect when object is never closed",
+            "params": [
+                "a,b,c,d,\"e"
+            ]
+        },
+        {
+            "skip": false,
+            "format": {
+                "hasHeaders": true
+            },
+            "name": "NotValidHeaderError",
+            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
+            "message": "Should detect when is not a valid header (breaker with no following value)",
+            "params": [
+                "A,C,\r\n,d,e"
+            ]
+        },
+        {
+            "skip": false,
+            "format": {
+                "hasHeaders": true
+            },
+            "name": "NotValidHeaderError",
+            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
+            "message": "Should detect when is not a valid header (number)",
+            "params": [
+                "A,C,0\r\n,d,e"
+            ]
+        },
+        {
+            "skip": false,
+            "format": {
+                "hasHeaders": true
+            },
+            "name": "NotValidHeaderError",
+            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
+            "message": "Should detect when is not a valid header (null)",
+            "params": [
+                "A,C,null\r\n,d,e"
+            ]
+        },
+        {
+            "skip": false,
+            "format": {
+                "hasHeaders": true
+            },
+            "name": "NotValidHeaderError",
+            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
+            "message": "Should detect when is not a valid header (empty)",
+            "params": [
+                "A,B,,\r\n,d,e"
+            ]
+        },
+        {
+            "skip": false,
+            "format": {
+                "hasHeaders": true
+            },
+            "name": "HeadersWithoutDataError",
+            "throws": "A CSV with headers must contain data",
+            "message": "Should detect when headers were pushed but there is not data",
+            "params": [
+                "A,B,C"
+            ]
+        }
+    ]
+}
