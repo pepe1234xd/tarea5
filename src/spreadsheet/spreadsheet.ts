@@ -5,7 +5,7 @@ import {
   FoundUndefinedElementError,
   NotFoundColumnError,
   InvalidRangeSelector,
-  NotAllowedElementToSaveError,
+  NotAllowedValueError,
   NotFoundRowError,
   NotValidLineLimitError,
   NotValidRangeLimitError,
@@ -23,7 +23,7 @@ import type {
   ValueData,
   SpreadhseetFormat,
 } from "../types.js";
-import { format } from "../text-format.js";
+import { isValueObject } from "../is-value-object.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -78,8 +78,6 @@ const _getDimension = (data: any[][]): Pointer => {
     y: data[0].length - 1,
   };
 };
-
-const JSON_PROTOTYPE = Object.getPrototypeOf({});
 
 /** The Spreadsheet parsed object */
 export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
@@ -162,48 +160,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
-   * Checks if the passed value is a valid ValueObject that only contains:
-   * - Text
-   * - Booleans
-   * - Numbers
-   * - Objects or Arrays containing the previous ones
-   */
-  isValueObject(value: any): value is ValueObject {
-    if (value === null) return true;
-    const type = typeof value;
-    if (
-      type === "string" ||
-      type === "number" ||
-      type === "bigint" ||
-      type === "boolean"
-    ) {
-      return true;
-    } else if (
-      type === "function" ||
-      type === "symbol" ||
-      type === "undefined"
-    ) {
-      return false;
-    } else {
-      if (Array.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-          const isValid = this.isValueObject(value[i]);
-          if (!isValid) return false;
-        }
-      } else {
-        if (Object.getPrototypeOf(value) === JSON_PROTOTYPE) {
-          let entries = Object.entries(value);
-          for (let i = 0; i < entries.length; i++) {
-            const isValid = this.isValueObject(entries[i][1]);
-            if (!isValid) return false;
-          }
-        } else return false;
-      }
-      return true;
-    }
-  }
-
-  /**
    * Moves the cursor to a specified position (if set) then reads the data table content
    * @param cursor The place to point to the data, if no cursor was passed will use the last value from the internal cursor
    */
@@ -232,7 +188,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   write(value: V, row: CellSelector, column: CellSelector) {
     if (!this.isTable)
       throw isNotTableError("Write specific value within the table");
-    if (!this.isValueObject(value)) throw NotAllowedElementToSaveError;
+    if (!isValueObject(value)) throw NotAllowedValueError;
     this.#changed = true;
     const dimension = _getDimension(this.#data);
 
@@ -270,7 +226,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       for (let x = s.x; x <= v.x; x++) {
         const value = column[x - s.x];
         // Validate the value exists
-        if (!this.isValueObject(value)) throw NotAllowedElementToSaveError;
+        if (!isValueObject(value)) throw NotAllowedValueError;
         this.#data[y][x] = value;
       }
     }

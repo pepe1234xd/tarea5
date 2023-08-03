@@ -13,6 +13,7 @@ import {
   Callee,
   ErrorCaseUnit,
   TestCaseUnit,
+  isSourceTest,
 } from "./types";
 import path from "path";
 
@@ -26,6 +27,7 @@ import { setDefaultTextFormat, setTextFormat } from "../src/text-format";
 import createAlphabetTest from "./callee/alphabet";
 import { expect } from "chai";
 import { replacer } from "dynason";
+import createSourceTest from "./callee/source";
 
 function capitalize(value: string) {
   const subs = value.substring(0, 1).toLocaleUpperCase();
@@ -74,6 +76,8 @@ async function collect() {
             callee = createParserTest(key);
           } else if (isSpreadsheetTest(key)) {
             callee = createSpreadsheetTest(key);
+          } else if (isSourceTest(key)) {
+            callee = createSourceTest(key);
           } else {
             throw new Error(`Test '${key}' has no implementation`);
           }
@@ -100,8 +104,9 @@ async function collect() {
               // If the error is an object, looks for a template to replace the values
               // found in the throws object
               if (typeof error.throws !== "string") {
-                const file = path.resolve(
-                  path.dirname(pathname),
+                const file = resolve(
+                  "tests",
+                  "mocks",
                   "templates",
                   `${error.name}.template.txt`,
                 );

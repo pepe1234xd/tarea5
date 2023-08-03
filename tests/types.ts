@@ -1,3 +1,4 @@
+import { type } from "os";
 import {
   CellSelector,
   Pointer,
@@ -126,6 +127,8 @@ type ReadContent = GeneralTest<
   string
 >;
 
+// Source
+
 type IsValueObject = GeneralTest<
   {
     value: any;
@@ -133,18 +136,21 @@ type IsValueObject = GeneralTest<
   boolean
 >;
 
+type Stringify = GeneralTest<
+  {
+    object: ValueData<any>;
+  },
+  string
+>;
+
 /// TEST CASES
 
 export type TestAlphabet = "from-number" | "get-number";
 export type TestParser = "transforms" | "process" | "parse";
-export type TestSpreadsheet =
-  | "write"
-  | "read"
-  | "range"
-  | "bulk"
-  | "is-value-object";
+export type TestSpreadsheet = "write" | "read" | "range" | "bulk";
+export type TestSource = "stringify" | "is-value-object";
 
-export type TestName = TestAlphabet | TestParser | TestSpreadsheet;
+export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
 
 // Validations to check mock files
 export const isAlphaetTest = (value: string): value is TestAlphabet =>
@@ -155,8 +161,9 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "write" ||
   value === "read" ||
   value === "bulk" ||
-  value === "range" ||
-  value === "is-value-object";
+  value === "range";
+export const isSourceTest = (value: string): value is TestSource =>
+  value === "stringify" || value === "is-value-object";
 
 export type Test<T extends TestName> = T extends "transforms"
   ? Transforms
@@ -176,6 +183,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? ReadContent
   : T extends "range"
   ? RangeContent
+  : T extends "stringify"
+  ? Stringify
   : T extends "is-value-object"
   ? IsValueObject
   : never;

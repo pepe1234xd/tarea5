@@ -75,9 +75,9 @@ export const isNotTableError = (description: string) =>
     replacer(NOT_TABLE_ERROR_TEMPLATE_STRING, { description }, { mode: "xml" }),
   );
 
-export const NotAllowedElementToSaveError = new Error(`
+export const NotAllowedValueError = new Error(`
 Values like undefined, symbols, classes and functions are not allowed, the only
-primitives allowed to store are:
+primitives allowed for the CSV format:
  - Text
  - Booleans
  - Numbers

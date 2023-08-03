@@ -35,14 +35,6 @@ type InvalidCase = "undefined" | "symbol" | "function" | "class";
 
 export default function createSpreadsheetTest(key: TestSpreadsheet) {
   switch (key) {
-    case "is-value-object":
-      return _(key, function (item) {
-        const csv = buildCSV({
-          data: [[]],
-          content: { isTable: false, headers: [], hasHeaders: false },
-        });
-        expect(csv.isValueObject(item.value)).to.equals(true);
-      });
     case "bulk":
       return _(
         key,
