@@ -6,6 +6,7 @@ import { format } from "../../src/text-format";
 import {
   CellSelector,
   RangeSelector,
+  SpreadhseetInsertOptions,
   SpreadsheetContent,
   ValueData,
 } from "../../src/types";
@@ -79,6 +80,52 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           }
 
           csv.bulk(_values, start);
+        },
+      );
+    case "insert":
+      return _(
+        key,
+        function (item) {
+          const csv = buildCSV(item);
+          const { expected, options, writtable } = item;
+          csv.insert(writtable, options);
+          const data = csv.toArray();
+          expect(data).to.eql(expected);
+        },
+        function (is: InvalidCase, options?: SpreadhseetInsertOptions) {
+          const csv = buildCSV({
+            data: [["a"]],
+            content: {
+              isTable: true,
+              headers: [],
+              hasHeaders: false,
+            },
+          });
+
+          let _values: ValueData<any> = [[]];
+
+          switch (is) {
+            case "undefined":
+              _values[0].push(undefined);
+              break;
+            case "symbol":
+              const symbol = Symbol("Fake symbol");
+              _values[0].push(symbol);
+              break;
+            case "class":
+              class SpreadhseetFake {}
+              const _class = new SpreadhseetFake();
+              _values[0].push(_class);
+              break;
+            case "function":
+              const _function = () => {};
+              _values[0].push(_function);
+              break;
+            default:
+              _values = is;
+              break;
+          }
+          csv.insert(_values, options);
         },
       );
     case "range":

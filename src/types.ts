@@ -116,3 +116,13 @@ export interface SpreadsheetContent {
    */
   readonly size: Size;
 }
+
+/**
+ * The insert options for the spreadsheet
+ */
+export type SpreadhseetInsertOptions = {
+  /** The row to start writing the content (If not passed will be evaluated as 1) */
+  start: CellSelector;
+  /**  If passed the data will be inserted after the desired row */
+  after: boolean;
+};

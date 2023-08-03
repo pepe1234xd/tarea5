@@ -22,6 +22,7 @@ import type {
   SpreadsheetContent,
   ValueData,
   SpreadhseetFormat,
+  SpreadhseetInsertOptions,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 
@@ -74,8 +75,8 @@ function toRangePointer(dimension: Pointer, s: RangeSelector) {
 
 const _getDimension = (data: any[][]): Pointer => {
   return {
-    x: data.length - 1,
-    y: data[0].length - 1,
+    x: data[0].length - 1,
+    y: data.length - 1,
   };
 };
 
@@ -229,6 +230,43 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         if (!isValueObject(value)) throw NotAllowedValueError;
         this.#data[y][x] = value;
       }
+    }
+  }
+
+  /**
+   * Insert a new set of rows to the element
+   * @param value The value to be written and must be a table with the same amount of spreadsheet rows or the out of boundaries values will be ignored
+   */
+  insert<T extends V>(
+    values: ValueData<T>,
+    options?: SpreadhseetInsertOptions,
+  ) {
+    if (!this.isTable)
+      throw isNotTableError("Write specific ranges within the table");
+    this.#changed = true;
+    const dimension = _getDimension(this.#data);
+    const after = options?.after === true;
+    let s = toCellPosition(dimension, options?.start ?? 1);
+    const v = {
+      x: dimension.x,
+      y: s + values.length - 1,
+    };
+
+    // Ignore values boyond the data scope
+    if (dimension.y < v.y) v.y = dimension.y;
+
+    for (let y = s; y <= v.y; y++) {
+      const column = values[y - s];
+      const newColumn: V[] = [];
+      if (dimension.y < y) throw NotFoundColumnError(y);
+      for (let x = 0; x <= v.x; x++) {
+        const value = column[x];
+        // Validate the value exists
+        if (!isValueObject(value)) throw NotAllowedValueError;
+        newColumn.push(value);
+      }
+      const start = after ? y + 1 : y;
+      this.#data.splice(start, 0, newColumn);
     }
   }
 

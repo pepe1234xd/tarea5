@@ -3,6 +3,7 @@ import {
   CellSelector,
   Pointer,
   RangeSelector,
+  SpreadhseetInsertOptions,
   SpreadsheetContent,
   TextFormat,
   ValueData,
@@ -115,6 +116,16 @@ type BulkContent = GeneralTest<
   string
 >;
 
+type InsertContent = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    options: SpreadhseetInsertOptions;
+    writtable: ValueData<any>;
+  },
+  ValueData<any>
+>;
+
 type ReadContent = GeneralTest<
   {
     data: ValueData<any>;
@@ -147,7 +158,7 @@ type Stringify = GeneralTest<
 
 export type TestAlphabet = "from-number" | "get-number";
 export type TestParser = "transforms" | "process" | "parse";
-export type TestSpreadsheet = "write" | "read" | "range" | "bulk";
+export type TestSpreadsheet = "write" | "read" | "range" | "bulk" | "insert";
 export type TestSource = "stringify" | "is-value-object";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
@@ -161,7 +172,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "write" ||
   value === "read" ||
   value === "bulk" ||
-  value === "range";
+  value === "range" ||
+  value == "insert";
 export const isSourceTest = (value: string): value is TestSource =>
   value === "stringify" || value === "is-value-object";
 
@@ -179,6 +191,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? WriteContent
   : T extends "bulk"
   ? BulkContent
+  : T extends "insert"
+  ? InsertContent
   : T extends "read"
   ? ReadContent
   : T extends "range"
