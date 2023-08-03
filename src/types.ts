@@ -21,7 +21,6 @@ export type TextFormat = {
    * - numbers
    * - true, false, TRUE, FALSE
    * - null, NULL
-   * - undefined, UNDEFINED
    * - JSON Objects
    */
   transform?: boolean;

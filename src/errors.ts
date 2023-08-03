@@ -2,7 +2,6 @@ import { replacer, Matcher } from "dynason";
 import { WINDOWS_BREAK_LINE, format } from "./text-format.js";
 import { context } from "./parser/context.js";
 import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
-import { ValueData, ValueObject } from "./types.js";
 
 // Errors to throw on validation failed
 export const FirstCharacterInvalidError = new Error(
