@@ -147,6 +147,13 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
 
   #stringify() {
     let string = "";
+    if (this.#hasHeaders) {
+      for (let i = 0; i < this.#headers.length; i++) {
+        string += `${this.#quote}${String(this.#headers[i])}${this.#quote}`;
+        if (i < this.#headers.length - 1) string += this.#delimiter;
+      }
+      string += this.#brk;
+    }
     for (let y = 0; y < this.#data.length; y++) {
       const column = this.#data[y];
       for (let x = 0; x < column.length; x++) {

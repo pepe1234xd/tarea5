@@ -11,7 +11,11 @@ class ContextPointer {
   /** X is stable state if it's value is the same at every skip */
   isStableX: boolean = true;
   /** The previous larges "x" reached before every skip */
-  lastLargestX: number = 0;
+  #lastLargestX: number = 0;
+  /**
+   * Detects that at least once there was a skip or reset
+   */
+  #changed = false;
   /** X coordintate */
   x: number = 0;
   /** Y coordintate */
@@ -30,11 +34,21 @@ class ContextPointer {
   skip() {
     // Saves the last largest x before reset and checks if the x is stable
     // at every new skip
-    if (this.y > 0 && this.isStableX)
-      this.isStableX = this.lastLargestX === this.x;
-    this.lastLargestX = this.x;
+    if (this.#changed && this.isStableX)
+      this.isStableX = this.#lastLargestX === this.x;
+    this.#lastLargestX = this.x;
     this.x = 0;
     this.y++;
+    this.#changed = true;
+  }
+
+  /**
+   * Resets the pointer without reseting the last largest X;
+   */
+  reset() {
+    this.y = 0;
+    this.x = 0;
+    this.#changed = true;
   }
 }
 

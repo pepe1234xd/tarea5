@@ -5,7 +5,7 @@ import {
   isFirstCharacterQuote,
 } from "../errors.js";
 import { format } from "../text-format.js";
-import { createContext } from "./context.js";
+import { context, createContext } from "./context.js";
 import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { reducer } from "./reducer.js";
 import { ValueObject } from "../types.js";
@@ -28,14 +28,14 @@ function cleanMemoization() {
  * @param {string} string The string to be processed
  */
 export function parse<V extends ValueObject>(string: string) {
-  // Creates a new parse context
-  createContext(string);
-
   // If the memoization option is on, check if the value was parsed already
   if (format.memoize) {
     // Rterun the stored data if if memoization is found
     if (memoized === string) return _csv;
   }
+
+  // Creates a new parse context
+  createContext(string);
 
   // If strict mode is on and there is no content throw an error
   if (isEmptyString(string)) {
@@ -68,6 +68,9 @@ export function parse<V extends ValueObject>(string: string) {
     brk: format.brk,
   });
   _csv = csv;
+
+  // Reset the previous context if used
+  context.reset();
 
   // Return a copy to avoid reference issues with the memoized version
   return csv.clone();

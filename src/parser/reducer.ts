@@ -1,31 +1,16 @@
-import { NotValidHeaderError, ObjectNeverClosedError } from "../errors.js";
+import {
+  HeadersWithoutDataError,
+  NotValidHeaderError,
+  ObjectNeverClosedError,
+} from "../errors.js";
 import { format } from "../text-format.js";
 import type { ValueData, ValueEmpty } from "../types.js";
-import { context } from "./context.js";
+import { context, createContext } from "./context.js";
 import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { process } from "./process.js";
 
 /**
- * A csv object can be considered as a table as always has the
- * following characteristics:
- * - The set contains valid headers
- * - The content has more than 2 rows
- * - The columns number across all rows is always the same
- */
-// function validateTableFormat(csv: CSV) {
-//   if (csv.hasHeaders && context.pointer.y > 0) {
-//     csv.isTable =
-//       csv.headers.length === csv.data[context.pointer.y].length && csv.isTable;
-//   } else if (context.pointer.y > 1) {
-//     csv.isTable =
-//       csv.data[context.pointer.y - 1].length ===
-//         csv.data[context.pointer.y].length && csv.isTable;
-//   }
-// }
-
-/**
  * Reduces the string from the CSV object to JavaScript values
- * @param csv The CSV object to populate
  */
 export function reducer() {
   const {
@@ -66,7 +51,7 @@ export function reducer() {
     // it can be assumed that there is "Nothing" before it
     // so there is an empty value to store
     // If that the case: empties the line content and continues
-    if (line === brk) {
+    if (line === brk && !isHeader) {
       // Creates and moves to the new row beggining (only if is not set to be ignored)
       if (!ignoreEmptyLines) {
         data[context.pointer.y].push(format.empty);
@@ -75,7 +60,7 @@ export function reducer() {
       }
       line = "";
       continue;
-    } else if (line === delimiter) {
+    } else if (line === delimiter && !isHeader) {
       // Moves to the next column
       context.pointer.right();
       data[context.pointer.y].push(format.empty);
@@ -152,11 +137,30 @@ export function reducer() {
       // and will start to be moved until the next session
       if (isHeader) {
         // A header must be a string and not a JavaScript value
-        if (typeof word !== "string") throw NotValidHeaderError;
+        if (
+          typeof word !== "string" ||
+          word === format.empty ||
+          word === delimiter ||
+          word === quote ||
+          word === brk ||
+          isNextDelimiterAndBreaker
+        )
+          throw NotValidHeaderError;
         headers.push(word);
+        context.pointer.right();
         // If a breaker or the end of the line was hit, it means that
         // all of the headers were parsed
-        isHeader = isHeader && !(isNextBreaker || isNextEndOfLine);
+        if (isNextBreaker || isNextEndOfLine) {
+          isHeader = false;
+          if (isNextBreaker) context.pointer.skip();
+          context.pointer.reset();
+          // Moves the global index after the or break breakline to skip it
+          index += brk.length;
+        } else {
+          isHeader = true;
+          // Moves the global index after the or delimiter breakline to skip it
+          index += delimiter.length;
+        }
       } else {
         // For delimiter plus line breaks push "word + empty",
         // then move to the beggining of the next row
@@ -212,17 +216,16 @@ export function reducer() {
   // If there is remaining content and was never closed throw an error
   if (!isEven && line) throw ObjectNeverClosedError();
 
-  // Force a last skip to end reading the content
-  context.pointer.skip();
-  // If x was stable during all the skips it means it is a table like object
-  const isTable = context.pointer.isStableX;
-
-  // Reset the previous context if used
-  context.reset();
-
-  return {
-    data,
-    headers,
-    isTable,
-  };
+  if (hasHeaders && data[0][0] === undefined) throw HeadersWithoutDataError;
+  else {
+    // Force a last skip to end reading the content
+    context.pointer.skip();
+    // If x was stable during all the skips it means it is a table like object
+    const isTable = context.pointer.isStableX;
+    return {
+      data,
+      headers,
+      isTable,
+    };
+  }
 }

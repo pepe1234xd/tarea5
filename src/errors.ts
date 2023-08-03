@@ -27,10 +27,10 @@ export const IsNotTableFormatError = new Error(
 );
 export const NotValidOptionError = new Error("The passed option was not valid");
 export const NotValidHeaderError = new Error(
-  "Header cannot be a JavaScript value",
+  "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
 );
-export const NotValidEmptyValue = new Error(
-  "The empty symbol must be a special JavaScript symbol",
+export const HeadersWithoutDataError = new Error(
+  "A CSV with headers must contain data",
 );
 
 export const NotValidUseOfQuotes = new Error(`
