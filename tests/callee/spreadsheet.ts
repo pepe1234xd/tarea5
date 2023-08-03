@@ -49,10 +49,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
         function (item) {
           const csv = buildCSV(item);
           const { expected, selector, writtable } = item;
-          csv.bulk(writtable, {
-            row: selector.row,
-            column: selector.column,
-          });
+          csv.bulk(writtable, selector);
           expect(csv.string).to.eql(expected);
         },
         function (is: InvalidCase | ValueData<any>, start: RangeSelector) {

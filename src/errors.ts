@@ -107,6 +107,12 @@ export const NotFoundColumnError = (y: number) =>
 export const NotFoundRowError = (x: number) =>
   new Error(`The row ${x + 1} was not found in one of the lines`);
 
+export const NotValidLineLimitError = (l: string) =>
+  new Error(`The "${l}" is not a valid limit`);
+
+export const NotValidRangeLimitError = (l: string) =>
+  new Error(`The "${l}" is not a valid limit`);
+
 const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = `
 "<value/>" is not a valid range selector, please use one of the following valid selectors:
   - @left-up

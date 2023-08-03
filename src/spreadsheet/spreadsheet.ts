@@ -7,6 +7,8 @@ import {
   InvalidRangeSelector,
   NotAllowedElementToSaveError,
   NotFoundRowError,
+  NotValidLineLimitError,
+  NotValidRangeLimitError,
 } from "../errors.js";
 import type {
   ValueObject,
@@ -24,108 +26,57 @@ import type {
 import { format } from "../text-format.js";
 
 /** Checks if some string can be considered as a limit */
-function isLineLimit(s: any): s is LineLimit {
+function toCellPosition(dimension: Pointer, s: string | number) {
   switch (s) {
-    case "@top":
-      return true;
+    case "@bottom":
+      return dimension.y;
     case "@right":
-      return true;
+      return dimension.x;
     default:
-      return false;
+      if (typeof s === "string") {
+        return alphabet.getNumber(s) - 1;
+      } else {
+        return s - 1;
+      }
   }
 }
 
-/** Returns the mentioned limit from the line */
-const verifyLimit = (isTable: boolean, limit: LineLimit) => {
-  if (isTable !== true)
-    throw isNotTableError(
-      `Use of the limit values as selectors such as ${limit}`,
-    );
-};
+/** Checks if some string can be considered as a limit */
+function toRangePointer(dimension: Pointer, s: RangeSelector) {
+  switch (s) {
+    case "@left-bottom":
+      return {
+        x: 0,
+        y: dimension.y,
+      };
+    case "@left-top":
+      return {
+        x: 0,
+        y: 0,
+      };
+    case "@right-bottom":
+      return {
+        x: dimension.x,
+        y: dimension.y,
+      };
+    case "@right-top":
+      return {
+        x: dimension.x,
+        y: 0,
+      };
+    default:
+      return {
+        x: toCellPosition(dimension, s.row),
+        y: toCellPosition(dimension, s.column),
+      };
+  }
+}
 
-/**
- * Gets the dimensions of the table as x,y coordinates
- */
-const getDimension = (isTable: boolean, data: any[][]): Pointer => {
-  if (!isTable) throw isNotTableError("Get the size of an CSV object.");
+const _getDimension = (data: any[][]): Pointer => {
   return {
     x: data.length - 1,
     y: data[0].length - 1,
   };
-};
-
-const _getDimension = (isTable: boolean, data: any[][]): Pointer => {
-  return {
-    x: data.length - 1,
-    y: data[0].length - 1,
-  };
-};
-
-/** Ensures a string is a valid number */
-const numberify = (s: string | number) => {
-  if (typeof s === "string") {
-    return alphabet.getNumber(s) - 1;
-  } else {
-    return s - 1;
-  }
-};
-
-const getY = (isTable: boolean, dimension: Pointer, column: CellSelector) => {
-  if (isLineLimit(column)) {
-    verifyLimit(isTable, column);
-    return dimension.y;
-  } else {
-    return numberify(column);
-  }
-};
-
-const _getY = (dimension: Pointer, column: CellSelector) => {
-  if (isLineLimit(column)) {
-    return dimension.y;
-  } else {
-    return numberify(column);
-  }
-};
-
-const getX = (isTable: boolean, dimension: Pointer, row: CellSelector) => {
-  if (isLineLimit(row)) {
-    verifyLimit(isTable, row);
-    return dimension.x;
-  } else {
-    return numberify(row);
-  }
-};
-
-const _getX = (dimension: Pointer, row: CellSelector) => {
-  if (isLineLimit(row)) {
-    return dimension.x;
-  } else {
-    return numberify(row);
-  }
-};
-
-const getRangePointer = (
-  selector: RangeSelector,
-  dimension: Pointer,
-): Pointer => {
-  if (typeof selector === "string") {
-    switch (selector as RangeLimit) {
-      case "@left-up":
-        return { x: 0, y: 0 };
-      case "@right-up":
-        return { x: 0, y: dimension.y };
-      case "@left-down":
-        return { x: dimension.x, y: 0 };
-      case "@right-down":
-        return { x: dimension.x, y: dimension.y };
-      default:
-        throw InvalidRangeSelector(selector);
-    }
-  } else {
-    const y = _getY(dimension, selector.column);
-    const x = _getX(dimension, selector.row);
-    return { x, y };
-  }
 };
 
 const JSON_PROTOTYPE = Object.getPrototypeOf({});
@@ -257,14 +208,16 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
    * @param cursor The place to point to the data, if no cursor was passed will use the last value from the internal cursor
    */
   read<T extends V>(row: CellSelector, column: CellSelector) {
-    const dimension = getDimension(this.#isTable, this.#data);
+    if (!this.isTable)
+      throw isNotTableError("Read specific value within the table");
+    const dimension = _getDimension(this.#data);
 
     // Validate the first array exists
-    let y = getY(this.#isTable, dimension, column);
+    let y = toCellPosition(dimension, column);
     if (this.#data.length < y) return undefined;
 
     // Validate the second array exists
-    let x = getX(this.#isTable, dimension, row);
+    let x = toCellPosition(dimension, row);
     if (this.#data[y].length < x) return undefined;
 
     return this.#data[y][x] as T;
@@ -281,12 +234,12 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       throw isNotTableError("Write specific value within the table");
     if (!this.isValueObject(value)) throw NotAllowedElementToSaveError;
     this.#changed = true;
-    const dimension = _getDimension(this.isTable, this.#data);
+    const dimension = _getDimension(this.#data);
 
     // Validate the first array exists
-    const y = _getY(dimension, column);
+    const y = toCellPosition(dimension, column);
     if (dimension.y < y) throw NotFoundColumnError(y);
-    const x = _getX(dimension, row);
+    const x = toCellPosition(dimension, row);
     if (dimension.x < x) throw NotFoundRowError(x);
 
     this.#data[y][x] = value;
@@ -301,20 +254,20 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     if (!this.isTable)
       throw isNotTableError("Write specific ranges within the table");
     this.#changed = true;
-    const dimension = _getDimension(this.isTable, this.#data);
-    const s = getRangePointer(start, dimension);
+    const dimension = _getDimension(this.#data);
+    const s = toRangePointer(dimension, start);
     const v = {
-      x: s.y + values.length,
-      y: s.x + values.length,
+      x: s.x + values.length - 1,
+      y: s.y + values.length - 1,
     };
 
     // Ignore values boyond the data scope
-    if (this.#data.length < v.y) v.y = this.#data.length;
-    if (this.#data[0].length < v.x) v.x = this.#data[0].length;
+    if (dimension.y < v.y) v.y = dimension.y;
+    if (dimension.x < v.x) v.x = dimension.x;
 
-    for (let y = s.y; y < v.y; y++) {
+    for (let y = s.y; y <= v.y; y++) {
       const column = values[y - s.y];
-      for (let x = s.x; x < v.x; x++) {
+      for (let x = s.x; x <= v.x; x++) {
         const value = column[x - s.x];
         // Validate the value exists
         if (!this.isValueObject(value)) throw NotAllowedElementToSaveError;
@@ -329,11 +282,11 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
    * @param to The final point to stop selecting the content
    */
   range<T extends V>(from: RangeSelector, to: RangeSelector): ValueData<T> {
-    if (!this.isTable) throw isNotTableError("Read sets within the table");
+    if (!this.#isTable) throw isNotTableError("Read sets within the table");
 
-    const dimension = _getDimension(this.isTable, this.#data);
-    const p1 = getRangePointer(from, dimension);
-    const p2 = getRangePointer(to, dimension);
+    const dimension = _getDimension(this.#data);
+    const p1 = toRangePointer(dimension, from);
+    const p2 = toRangePointer(dimension, to);
 
     const range: ValueData<any> = [];
     for (let y = p1.y; y <= p2.y; y++) {

@@ -56,19 +56,19 @@ export type Pointer = {
   y: number;
 };
 
-type TopLimit = "@top";
-type RightLimit = "@right";
-export type LineLimit = TopLimit | RightLimit;
+export type LineLimit = "@bottom" | "@right";
 export type RangeLimit =
-  | "@left-up"
-  | "@left-down"
-  | "@right-down"
-  | "@right-up";
-export type CellSelector = number | string | RightLimit;
-export type RangeSelector = {
-  row: CellSelector | RangeLimit;
-  column: CellSelector | RangeLimit;
-};
+  | "@left-top"
+  | "@left-bottom"
+  | "@right-bottom"
+  | "@right-top";
+export type CellSelector = number | string | LineLimit;
+export type RangeSelector =
+  | RangeLimit
+  | {
+      row: CellSelector;
+      column: CellSelector;
+    };
 
 export type Size = {
   rows: number;
