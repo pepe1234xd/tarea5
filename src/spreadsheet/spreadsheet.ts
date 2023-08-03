@@ -291,8 +291,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     const range: ValueData<any> = [];
     for (let y = p1.y; y <= p2.y; y++) {
       const column: V[] = [];
+      if (dimension.y < y) throw NotFoundColumnError(y);
       for (let x = p1.x; x <= p2.x; x++) {
         column.push(this.#data[y][x]);
+        if (dimension.x < x) throw NotFoundRowError(x);
       }
       range.push(column);
     }

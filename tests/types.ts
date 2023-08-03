@@ -1,6 +1,7 @@
 import {
   CellSelector,
   Pointer,
+  RangeSelector,
   SpreadsheetContent,
   TextFormat,
   ValueData,
@@ -94,14 +95,10 @@ type RangeContent = GeneralTest<
   {
     data: ValueData<any>;
     content: SpreadsheetContent;
-    selector: {
-      row1: CellSelector;
-      column1: CellSelector;
-      row2: CellSelector;
-      column2: CellSelector;
-    };
+    to: RangeSelector;
+    from: RangeSelector;
   },
-  string
+  ValueData<any>
 >;
 
 type BulkContent = GeneralTest<

@@ -89,6 +89,27 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           csv.bulk(_values, start);
         },
       );
+    case "range":
+      return _(
+        key,
+        function (item) {
+          const csv = buildCSV(item);
+          const { expected, from, to } = item;
+          const value = csv.range(from, to);
+          expect(value).to.eql(expected);
+        },
+        function (from: RangeSelector, to: RangeSelector) {
+          const csv = buildCSV({
+            data: [["a"]],
+            content: {
+              isTable: true,
+              headers: [],
+              hasHeaders: false,
+            },
+          });
+          csv.range(from, to);
+        },
+      );
     case "read":
       return _(key, function (item) {
         const csv = buildCSV(item);
